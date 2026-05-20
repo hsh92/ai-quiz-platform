@@ -13,7 +13,9 @@
     "firebase": "firebase",
     "firebase:login": "firebase login",
     "deploy": "npm run build && firebase deploy --only hosting",
-    "deploy:all": "npm run build && firebase deploy"
+    "deploy:all": "npm run build && firebase deploy",
+    "hosting:block": "firebase deploy --only hosting --config firebase.maintenance.json",
+    "hosting:restore": "npm run deploy"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

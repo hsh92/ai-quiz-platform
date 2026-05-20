@@ -6,18 +6,22 @@ OpenAI API로 퀴즈를 생성하고, Firebase Firestore로 데이터를 저장�
 **Firebase 프로젝트**: `quiz-32329`  
 **GitHub**: https://github.com/hsh92/ai-quiz-platform
 
+> **현재 서비스 상태**: 웹 URL **점검 중** (유지보수 페이지 배포됨). 앱을 다시 열려면 [`npm run hosting:restore`](#웹-url-일시-차단-유지보수-페이지) 실행.
+
 ---
 
 ## 목차
 
 - [기능](#기능)
 - [기술 스택](#기술-스택)
+- [Git / GitHub](#git--github)
 - [빠른 시작](#빠른-시작)
 - [Firebase 설치](#firebase-설치)
 - [Firebase 프로젝트 설정](#firebase-프로젝트-설정)
 - [환경 변수](#환경-변수)
 - [Firestore 데이터 구조](#firestore-데이터-구조)
 - [Firebase 배포](#firebase-배포)
+- [웹 URL 일시 차단](#웹-url-일시-차단-유지보수-페이지)
 - [테스트](#테스트)
 - [사용 방법](#사용-방법)
 - [주의사항](#주의사항)
@@ -258,6 +262,41 @@ npm run deploy
 
 내부적으로 `npm run build` → `firebase deploy --only hosting` 순서로 실행됩니다.
 
+### 웹 URL 일시 차단 (유지보수 페이지)
+
+Firebase Hosting에 **점검 전용 페이지**만 배포하여, 퀴즈 앱 접속을 일시 중단합니다.
+
+- **차단 대상**: https://quiz-32329.web.app (웹 UI만)
+- **유지됨**: Firestore DB, Firebase Console, 로컬 `npm run dev`
+
+#### 차단 (서비스 중지)
+
+```bash
+npm run hosting:block
+```
+
+| 항목 | 내용 |
+|------|------|
+| 배포 설정 | [`firebase.maintenance.json`](firebase.maintenance.json) |
+| 배포 폴더 | [`maintenance/`](maintenance/) (`index.html` 1개) |
+| 사용자 화면 | 「서비스 일시 중단」 안내 |
+
+#### 복구 (서비스 재개)
+
+```bash
+npm run hosting:restore
+```
+
+`npm run build` 후 일반 앱(`dist/`)을 Hosting에 재배포합니다. 퀴즈 플랫폼이 다시 이용 가능해집니다.
+
+#### 점검 문구 수정
+
+[`maintenance/index.html`](maintenance/index.html) 편집 후 `npm run hosting:block` 재실행.
+
+#### 캐시 참고
+
+차단·복구 직후 예전 화면이 보이면 **Ctrl+Shift+R**(강력 새로고침) 또는 시크릿 창으로 확인하세요.
+
 ### Hosting + Firestore 규칙·인덱스 전체 배포
 
 ```bash
@@ -407,6 +446,8 @@ npm run firebase -- deploy --only hosting
 | 배포 후에도 예전 UI | 캐시 | Ctrl+Shift+R, 또는 시크릿 창 |
 | AI 생성 실패 | OpenAI 키·할당량 | `.env`의 `VITE_OPENAI_API_KEY` 확인 |
 | Firestore 연결 안 됨 | `.env` 누락·오타 | 빌드 전 `.env` 확인 후 `npm run build` 재실행 |
+| URL 차단 후에도 앱 보임 | 브라우저·CDN 캐시 | Ctrl+Shift+R 또는 `?nocache=1` 로 확인 |
+| 서비스 다시 시작 | 유지보수 모드 중 | `npm run hosting:restore` |
 
 ### Firestore 인덱스 오류 링크
 
@@ -418,10 +459,13 @@ npm run firebase -- deploy --only hosting
 
 ```
 quiz/
-├── .env.example          # 환경 변수 템플릿
-├── .firebaserc           # Firebase 프로젝트 ID
-├── firebase.json         # Hosting·Firestore 설정
-├── firestore.rules       # 보안 규칙
+├── .env.example              # 환경 변수 템플릿
+├── .firebaserc               # Firebase 프로젝트 ID
+├── firebase.json             # Hosting(dist)·Firestore 설정
+├── firebase.maintenance.json # Hosting 점검 페이지 전용 설정
+├── maintenance/
+│   └── index.html            # URL 차단 시 표시 페이지
+├── firestore.rules           # 보안 규칙
 ├── firestore.indexes.json
 ├── src/
 │   ├── components/
@@ -450,6 +494,8 @@ quiz/
 | `npm run firebase -- <cmd>` | Firebase CLI 명령 |
 | `npm run deploy` | 빌드 + Hosting 배포 |
 | `npm run deploy:all` | 빌드 + Hosting·Firestore 전체 배포 |
+| `npm run hosting:block` | 점검 페이지 배포 → **웹 URL 일시 차단** |
+| `npm run hosting:restore` | 일반 앱 빌드·배포 → **서비스 재개** |
 
 ---
 
