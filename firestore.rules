@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /quizzes/{quizId} {
+      allow read: if true;
+      allow write: if true;
+
+      match /questions/{questionId} {
+        allow read: if true;
+        allow write: if true;
+      }
+    }
+
+    match /results/{quizId}/scores/{nickname} {
+      allow read: if true;
+      allow create: if !exists(/databases/$(database)/documents/results/$(quizId)/scores/$(nickname));
+      allow update: if false;
+    }
+  }
+}
