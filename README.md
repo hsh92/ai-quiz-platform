@@ -3,7 +3,8 @@
 OpenAI API로 퀴즈를 생성하고, Firebase Firestore로 데이터를 저장·조회하며, Firebase Hosting으로 배포하는 교육용 퀴즈 플랫폼입니다.
 
 **배포 URL**: https://quiz-32329.web.app  
-**Firebase 프로젝트**: `quiz-32329`
+**Firebase 프로젝트**: `quiz-32329`  
+**GitHub**: https://github.com/hsh92/ai-quiz-platform
 
 ---
 
@@ -42,6 +43,20 @@ OpenAI API로 퀴즈를 생성하고, Firebase Firestore로 데이터를 저장�
 - **백엔드/DB**: Firebase Firestore
 - **배포**: Firebase Hosting
 - **CLI**: `firebase-tools` (devDependency)
+
+---
+
+## Git / GitHub
+
+```bash
+git clone https://github.com/hsh92/ai-quiz-platform.git
+cd ai-quiz-platform
+npm install
+cp .env.example .env
+# .env에 API 키 입력 후 npm run dev
+```
+
+> `.env` 파일은 Git에 포함되지 않습니다. API 키는 로컬에서만 관리하세요.
 
 ---
 
